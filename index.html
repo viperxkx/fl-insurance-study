@@ -818,60 +818,53 @@ svg.linechart { width:100%; height:100%; overflow:visible; }
 
 /* ── COI Tabs ─────────────────────────────────────────────────────────── */
 .coi-tabs-bar {
-  display:flex; flex-wrap:wrap; gap:4px;
-  padding:0 0 14px 0; margin-bottom:16px;
-  border-bottom:1px solid var(--border2);
+  display:flex; flex-wrap:wrap; gap:5px;
+  padding:0 0 12px 0; margin-bottom:14px;
 }
 .coi-tab {
-  padding:5px 12px;
-  border-radius:var(--r2);
-  border:1px solid var(--border2);
-  background:rgba(255,255,255,0.5);
+  padding:6px 14px;
+  border-radius:99px;
+  border:1.5px solid var(--border2);
+  background:rgba(255,255,255,0.6);
   font-family:'Plus Jakarta Sans',sans-serif;
   font-size:0.72rem; font-weight:700;
   color:var(--text2); cursor:pointer;
   transition:all 0.15s;
   white-space:nowrap;
+  outline:none;
 }
-.coi-tab:hover { background:rgba(232,146,58,0.08); color:var(--amber); border-color:rgba(232,146,58,0.3); }
-.coi-tab.active { background:var(--amber-g); color:white; border-color:transparent; }
+.coi-tab:hover { background:rgba(232,146,58,0.1); color:var(--amber); border-color:rgba(232,146,58,0.4); }
+.coi-tab.active { background:var(--amber-g); color:white; border-color:transparent; box-shadow:0 2px 10px rgba(232,146,58,0.3); }
 .coi-panel { display:none; }
 .coi-panel.active { display:block; }
 
 /* ── COI Calendar ─────────────────────────────────────────────────────── */
-.cal-outer { overflow-x:auto; }
-.cal-header-row {
-  display:grid; grid-template-columns:60px repeat(6,1fr);
-  gap:4px; margin-bottom:4px; padding:0 2px;
+.cal-outer { overflow-x:auto; padding-bottom:4px; }
+.cal-grid {
+  display:grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap:8px;
+  min-width:560px;
 }
-.cal-header-row div { font-size:0.65rem; font-weight:800; color:var(--text3); text-align:center; text-transform:uppercase; }
-.cal-week-row {
-  display:grid; grid-template-columns:60px repeat(6,1fr);
-  gap:4px; margin-bottom:4px; align-items:start;
-}
-.cal-week-label {
-  font-size:0.65rem; font-weight:800; color:var(--text3);
-  writing-mode:vertical-rl; text-align:center;
-  transform:rotate(180deg); padding:4px 0;
-}
-.cal-day {
-  background:rgba(255,255,255,0.5);
+.day-card {
+  background:rgba(255,255,255,0.55);
   border:1px solid var(--border);
   border-radius:var(--r2);
-  padding:6px 7px;
-  font-size:0.7rem;
-  min-height:52px;
+  padding:10px 11px;
   cursor:pointer;
-  transition:box-shadow 0.15s;
+  transition:box-shadow 0.15s, transform 0.12s;
+  position:relative;
 }
-.cal-day:hover { box-shadow:0 2px 10px rgba(0,0,0,0.07); }
-.cal-day.off { background:rgba(0,0,0,0.02); opacity:0.5; }
-.cal-day.completed { opacity:0.6; }
-.cal-day .cd-label { font-weight:800; font-size:0.68rem; color:var(--text); }
-.cal-day .cd-sub { font-size:0.64rem; color:var(--text3); margin-top:1px; }
-.cal-day .cd-badge {
+.day-card:hover { box-shadow:0 3px 14px rgba(0,0,0,0.08); transform:translateY(-1px); }
+.day-card.off { background:rgba(0,0,0,0.02); opacity:0.45; }
+.day-card.completed { opacity:0.55; }
+.day-card.completed .dc-title { text-decoration:line-through; }
+.dc-meta { font-size:0.63rem; font-weight:800; color:var(--text3); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:3px; }
+.dc-title { font-size:0.8rem; font-weight:800; color:var(--text); margin-bottom:3px; }
+.dc-desc { font-size:0.7rem; color:var(--text2); line-height:1.4; }
+.dc-badge {
   display:inline-block; font-size:0.6rem; font-weight:800;
-  padding:1px 6px; border-radius:99px; margin-top:3px;
+  padding:2px 8px; border-radius:99px; margin-top:5px;
 }
 .badge-class { background:rgba(107,159,212,0.15); color:#6b9fd4; }
 .badge-review { background:rgba(155,127,199,0.15); color:#9b7fc7; }
@@ -879,6 +872,8 @@ svg.linechart { width:100%; height:100%; overflow:visible; }
 .badge-retest { background:rgba(224,90,90,0.12); color:#e05a5a; }
 .badge-off { background:rgba(0,0,0,0.05); color:var(--text3); }
 .badge-setup { background:rgba(232,146,58,0.12); color:var(--amber); }
+.dc-check { position:absolute; top:8px; right:8px; width:16px; height:16px; border-radius:50%; border:2px solid var(--border2); display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+.day-card.completed .dc-check { background:#4caf82; border-color:#4caf82; }
 </style>
 </head>
 <body>
@@ -1101,9 +1096,12 @@ svg.linechart { width:100%; height:100%; overflow:visible; }
       <button class="coi-tab" onclick="switchCOITab('examtips',this)">Exam Tips</button>
       <button class="coi-tab" onclick="switchCOITab('videos',this)">Videos</button>
     </div>
+    <div style="height:1px;background:var(--border2);margin:0 0 18px 0"></div>
 
     <!-- Overview Panel -->
-    <div id="coi-panel-overview" class="coi-panel">
+    <div id="coi-panel-overview" class="coi-panel active">
+
+      <!-- Exam overview table -->
       <div class="gc" style="margin-bottom:14px">
         <div class="gc-title" style="margin-bottom:12px">Florida Personal Lines — Exam Overview</div>
         <table class="notes-table" style="margin-top:8px">
@@ -1114,20 +1112,29 @@ svg.linechart { width:100%; height:100%; overflow:visible; }
           <tr><td>Ch. 4</td><td>Types of Casualty Policies</td><td style="font-weight:700">13%</td></tr>
           <tr><td>Ch. 5</td><td>FL Statutes — All Lines</td><td style="font-weight:700">15%</td></tr>
           <tr><td>Ch. 6</td><td>FL Statutes — Personal Lines</td><td style="font-weight:700">10%</td></tr>
+          <tr><td style="color:var(--text3)">Ch. 7</td><td style="color:var(--text3)">Ethics (Supplementary)</td><td style="color:var(--text3);font-weight:700">—</td></tr>
+          <tr><td style="color:var(--text3)">Ch. 8</td><td style="color:var(--text3)">Supplementary Content</td><td style="color:var(--text3);font-weight:700">—</td></tr>
+          <tr><td style="color:var(--text3)">Ch. 9</td><td style="color:var(--text3)">FL Laws &amp; Ethics Update</td><td style="color:var(--text3);font-weight:700">—</td></tr>
         </table>
+        <div style="font-size:0.7rem;color:var(--text3);margin-top:6px">Chapters 7–9 are supplementary and not directly tested on the state exam.</div>
         <div class="highlight" style="margin-top:10px">108 questions (100 scored + 8 pretest) &nbsp;·&nbsp; 70% to pass &nbsp;·&nbsp; 2-hour limit</div>
       </div>
-      <!-- COI Training Calendar -->
+
+      <!-- Training Calendar -->
       <div class="gc" style="margin-bottom:14px">
-        <div class="gc-title" style="margin-bottom:10px">Training Calendar</div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-          <label style="font-size:0.78rem;font-weight:700;color:var(--text2)">Start Date:</label>
-          <input type="date" id="coi-start-date" onchange="saveCOIStartDate(this.value)" style="padding:5px 10px;border:1.5px solid var(--border2);border-radius:var(--r2);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.78rem;background:rgba(255,255,255,0.6);color:var(--text);outline:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div class="gc-title">Training Calendar</div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <label style="font-size:0.75rem;font-weight:700;color:var(--text2)">Start Date:</label>
+            <input type="date" id="coi-start-date" onchange="saveCOIStartDate(this.value)"
+              style="padding:5px 10px;border:1.5px solid var(--border2);border-radius:var(--r2);font-family:'Plus Jakarta Sans',sans-serif;font-size:0.75rem;background:rgba(255,255,255,0.6);color:var(--text);outline:none">
+          </div>
         </div>
-        <div id="coi-calendar-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px"></div>
-        <div id="coi-day-tracker" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
+        <div id="coi-calendar-grid" style="margin-bottom:10px"></div>
+        <div id="coi-day-tracker" style="display:flex;flex-direction:column;gap:6px;margin-top:8px"></div>
       </div>
-    </div>
+
+  </div>
 
     <div id="coi-panel-examdash" class="coi-panel" style="display:none">
       <div class="gc" style="margin-bottom:14px">
@@ -1778,7 +1785,20 @@ svg.linechart { width:100%; height:100%; overflow:visible; }
   </div>
 
 
-    <div id="coi-panel-practiceexam" class="coi-panel" style="display:none">
+      <div id="coi-panel-quiz" class="coi-panel">
+    <div class="gc" style="margin-bottom:14px">
+      <div class="gc-title" style="margin-bottom:16px">Chapter Quiz</div>
+      <div id="quiz-container">
+        <div style="text-align:center;padding:32px;color:var(--text3)">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--border2)" stroke-width="1.5" stroke-linecap="round" style="display:block;margin:0 auto 12px"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Select a chapter quiz from the Chapters tab or use the flashcard navigation above.
+        </div>
+      </div>
+    </div>
+    <div id="quiz-area"></div>
+  </div>
+
+  <div id="coi-panel-practiceexam" class="coi-panel" style="display:none">
 <div class="gc" style="margin-bottom:16px">
       <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px">
         
@@ -4672,31 +4692,20 @@ function clearFloatChat() {
 const COI_EXAM_TABS = new Set(['quiz','practiceexam','certexam','readiness']);
 
 function switchCOITab(name, el) {
-  document.querySelectorAll('.coi-panel').forEach(p => { p.style.display='none'; p.classList.remove('active'); });
+  document.querySelectorAll('.coi-panel').forEach(p => {
+    p.style.display = 'none';
+    p.classList.remove('active');
+  });
   document.querySelectorAll('.coi-tab').forEach(b => b.classList.remove('active'));
   const panel = document.getElementById('coi-panel-'+name);
-  if(panel) { panel.style.display='block'; panel.classList.add('active'); }
+  if(panel) { panel.style.display = 'block'; panel.classList.add('active'); }
   if(el) el.classList.add('active');
-  if(name==='examdash') setTimeout(animateBars, 100);
-  if(name==='flashcards') setTimeout(()=>{ if(currentDeck.length===0) loadDeck(0); }, 50);
-
-  // Hide FI floating widget during quizzes & exams
-  const widget = document.getElementById('float-chat-widget');
-  if(widget) {
-    if(COI_EXAM_TABS.has(name)) {
-      // Close panel if open, then hide widget
-      if(floatOpen) toggleFloatChat();
-      widget.style.opacity = '0';
-      widget.style.pointerEvents = 'none';
-      widget.style.transform = 'translateY(20px)';
-      // Show a brief toast
-      showFIBlockedToast();
-    } else {
-      widget.style.opacity = '1';
-      widget.style.pointerEvents = 'auto';
-      widget.style.transform = '';
-    }
-  }
+  if(name==='chapters') setTimeout(renderAllNotes, 50);
+  if(name==='flashcards') setTimeout(renderCOIFlashcards, 50);
+  if(name==='quiz') setTimeout(renderCOIQuiz, 50);
+  if(name==='readiness') setTimeout(renderReadiness, 50);
+  if(name==='examdash') setTimeout(animateBars, 300);
+  if(name==='overview') setTimeout(renderCOICalendar, 50);
 }
 
 function showFIBlockedToast() {
@@ -4947,12 +4956,15 @@ function toggleCoiDay(dayNum) {
   renderCOICalendar();
 }
 
-// Init calendar
-(function(){
+// Init calendar + COI panel visibility
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.coi-panel').forEach(p => { p.style.display='none'; p.classList.remove('active'); });
+  const ov = document.getElementById('coi-panel-overview');
+  if(ov) { ov.style.display='block'; ov.classList.add('active'); }
   const stored = localStorage.getItem('coiStartDate');
   if(stored) { const el = document.getElementById('coi-start-date'); if(el) el.value = stored; }
   renderCOICalendar();
-})();
+});
 
 // ── Quick Links ──
 const defaultLinks = [
