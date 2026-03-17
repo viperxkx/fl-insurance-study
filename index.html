@@ -4343,7 +4343,7 @@ async function sendTutorMessage() {
         parts: [{ text: txt }]
       });
     }
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAG-oCNDkA0JIDXYVJFgwZCJ9vZt5wETaY', {
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyAG-oCNDkA0JIDXYVJFgwZCJ9vZt5wETaY', {
       signal: controller.signal,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -4608,7 +4608,7 @@ async function sendFloatMessage() {
         parts: [{ text: txt }]
       });
     }
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAG-oCNDkA0JIDXYVJFgwZCJ9vZt5wETaY', {
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyAG-oCNDkA0JIDXYVJFgwZCJ9vZt5wETaY', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
