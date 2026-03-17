@@ -4336,7 +4336,7 @@ async function sendTutorMessage() {
       role: m.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: m.content }]
     }));
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAG-oCNDkA0JIDXYVJFgwZCJ9vZt5wETaY', {
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAG-oCNDkA0JIDXYVJFgwZCJ9vZt5wETaY', {
       signal: controller.signal,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -4353,7 +4353,8 @@ async function sendTutorMessage() {
     fiHistory.push({ role:'assistant', content: reply });
     renderFIResponse(reply, typingBubble);
   } catch(err) {
-    if(typingBubble) typingBubble.innerHTML = '⚠️ Connection error. Check your internet and try again.';
+    if(typingBubble) console.error('FI Tutor error:', err);
+    if(typingBubble) typingBubble.innerHTML = '⚠️ ' + (err.message || 'Connection error. Try again.');
   }
 
   if(btn) btn.style.opacity = '1';
@@ -4594,7 +4595,7 @@ async function sendFloatMessage() {
       role: m.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: m.content }]
     }));
-    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=AIzaSyAG-oCNDkA0JIDXYVJFgwZCJ9vZt5wETaY', {
+    const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAG-oCNDkA0JIDXYVJFgwZCJ9vZt5wETaY', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -4609,7 +4610,8 @@ async function sendFloatMessage() {
     fiHistory.push({ role:'assistant', content:reply });
     renderFIResponse(reply, typingBubble);
   } catch(e) {
-    if(typingBubble) typingBubble.innerHTML = '⚠️ Connection error. Try again.';
+    console.error('FI Float error:', e);
+    if(typingBubble) typingBubble.innerHTML = '⚠️ ' + (e.message || 'Connection error. Try again.');
   }
 
   if(btn) btn.style.opacity = '1';
