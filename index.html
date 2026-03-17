@@ -4340,7 +4340,7 @@ async function sendTutorMessage() {
       signal: controller.signal,
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer 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' },
-      body: JSON.stringify({ model: 'llama-3.1-8b-instant', messages: groqMessages, max_tokens: 1024 })
+      body: JSON.stringify({ model: 'llama3-70b-8192', messages: groqMessages, max_tokens: 1024 })
     });
     clearTimeout(timeoutId);
     const data = await res.json();
@@ -4594,7 +4594,7 @@ async function sendFloatMessage() {
     const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer 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' },
-      body: JSON.stringify({ model: 'llama-3.1-8b-instant', messages: groqMsgs2, max_tokens: 1024 })
+      body: JSON.stringify({ model: 'llama3-70b-8192', messages: groqMsgs2, max_tokens: 1024 })
     });
     const data = await res.json();
     if(data.error) throw new Error(data.error.message || 'Groq API error');
