@@ -815,6 +815,70 @@ svg.linechart { width:100%; height:100%; overflow:visible; }
 .note-body { font-size:0.8rem; color:var(--text2); line-height:1.6; white-space:pre-wrap; }
 .note-meta { font-size:0.68rem; color:var(--text3); margin-top:6px; display:flex; align-items:center; gap:8px; }
 .note-done-badge { font-size:0.65rem; font-weight:800; padding:2px 7px; border-radius:99px; background:rgba(76,175,130,0.15); color:#4caf82; }
+
+/* ── COI Tabs ─────────────────────────────────────────────────────────── */
+.coi-tabs-bar {
+  display:flex; flex-wrap:wrap; gap:4px;
+  padding:0 0 14px 0; margin-bottom:16px;
+  border-bottom:1px solid var(--border2);
+}
+.coi-tab {
+  padding:5px 12px;
+  border-radius:var(--r2);
+  border:1px solid var(--border2);
+  background:rgba(255,255,255,0.5);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  font-size:0.72rem; font-weight:700;
+  color:var(--text2); cursor:pointer;
+  transition:all 0.15s;
+  white-space:nowrap;
+}
+.coi-tab:hover { background:rgba(232,146,58,0.08); color:var(--amber); border-color:rgba(232,146,58,0.3); }
+.coi-tab.active { background:var(--amber-g); color:white; border-color:transparent; }
+.coi-panel { display:none; }
+.coi-panel.active { display:block; }
+
+/* ── COI Calendar ─────────────────────────────────────────────────────── */
+.cal-outer { overflow-x:auto; }
+.cal-header-row {
+  display:grid; grid-template-columns:60px repeat(6,1fr);
+  gap:4px; margin-bottom:4px; padding:0 2px;
+}
+.cal-header-row div { font-size:0.65rem; font-weight:800; color:var(--text3); text-align:center; text-transform:uppercase; }
+.cal-week-row {
+  display:grid; grid-template-columns:60px repeat(6,1fr);
+  gap:4px; margin-bottom:4px; align-items:start;
+}
+.cal-week-label {
+  font-size:0.65rem; font-weight:800; color:var(--text3);
+  writing-mode:vertical-rl; text-align:center;
+  transform:rotate(180deg); padding:4px 0;
+}
+.cal-day {
+  background:rgba(255,255,255,0.5);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:6px 7px;
+  font-size:0.7rem;
+  min-height:52px;
+  cursor:pointer;
+  transition:box-shadow 0.15s;
+}
+.cal-day:hover { box-shadow:0 2px 10px rgba(0,0,0,0.07); }
+.cal-day.off { background:rgba(0,0,0,0.02); opacity:0.5; }
+.cal-day.completed { opacity:0.6; }
+.cal-day .cd-label { font-weight:800; font-size:0.68rem; color:var(--text); }
+.cal-day .cd-sub { font-size:0.64rem; color:var(--text3); margin-top:1px; }
+.cal-day .cd-badge {
+  display:inline-block; font-size:0.6rem; font-weight:800;
+  padding:1px 6px; border-radius:99px; margin-top:3px;
+}
+.badge-class { background:rgba(107,159,212,0.15); color:#6b9fd4; }
+.badge-review { background:rgba(155,127,199,0.15); color:#9b7fc7; }
+.badge-exam { background:rgba(76,175,130,0.15); color:#4caf82; }
+.badge-retest { background:rgba(224,90,90,0.12); color:#e05a5a; }
+.badge-off { background:rgba(0,0,0,0.05); color:var(--text3); }
+.badge-setup { background:rgba(232,146,58,0.12); color:var(--amber); }
 </style>
 </head>
 <body>
@@ -1065,7 +1129,7 @@ svg.linechart { width:100%; height:100%; overflow:visible; }
       </div>
     </div>
 
-    id="coi-panel-examdash" class="coi-panel" style="display:none">
+    <div id="coi-panel-examdash" class="coi-panel" style="display:none">
       <div class="gc" style="margin-bottom:14px">
         <div class="gc-title" style="margin-bottom:12px">Exam Preparation Dashboard</div>
         <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px">
