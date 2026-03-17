@@ -4332,10 +4332,13 @@ async function sendTutorMessage() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30000);
     const systemPrompt = TUTOR_SYSTEM.replace('{{PORTAL_CONTEXT}}', buildPortalContext());
-    const geminiMessages = fiHistory.map(m => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }]
-    }));
+    const geminiMessages = [];
+    for(const m of fiHistory) {
+      geminiMessages.push({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: String(m.content || '') }]
+      });
+    }
     const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAG-oCNDkA0JIDXYVJFgwZCJ9vZt5wETaY', {
       signal: controller.signal,
       method: 'POST',
@@ -4343,7 +4346,7 @@ async function sendTutorMessage() {
       body: JSON.stringify({
         system_instruction: { parts: [{ text: systemPrompt }] },
         contents: geminiMessages,
-        generationConfig: { maxOutputTokens: 1000 }
+        generationConfig: { maxOutputTokens: 1024 }
       })
     });
     clearTimeout(timeoutId);
@@ -4591,17 +4594,20 @@ async function sendFloatMessage() {
 
   try {
     const _systemPrompt = TUTOR_SYSTEM.replace('{{PORTAL_CONTEXT}}', buildPortalContext());
-    const _geminiMsgs = fiHistory.map(m => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }]
-    }));
+    const _geminiMsgs = [];
+    for(const m of fiHistory) {
+      _geminiMsgs.push({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: String(m.content || '') }]
+      });
+    }
     const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAG-oCNDkA0JIDXYVJFgwZCJ9vZt5wETaY', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         system_instruction: { parts: [{ text: _systemPrompt }] },
         contents: _geminiMsgs,
-        generationConfig: { maxOutputTokens: 1000 }
+        generationConfig: { maxOutputTokens: 1024 }
       })
     });
     const data = await res.json();
