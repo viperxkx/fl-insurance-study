@@ -4333,10 +4333,14 @@ async function sendTutorMessage() {
     const timeoutId = setTimeout(() => controller.abort(), 30000);
     const systemPrompt = TUTOR_SYSTEM.replace('{{PORTAL_CONTEXT}}', buildPortalContext());
     const geminiMessages = [];
-    for(const m of fiHistory) {
+    for(let i=0; i<fiHistory.length; i++) {
+      const m = fiHistory[i];
+      const txt = (i===0 && m.role==='user') 
+        ? systemPrompt + '\n\n---\n\n' + String(m.content || '')
+        : String(m.content || '');
       geminiMessages.push({
         role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: String(m.content || '') }]
+        parts: [{ text: txt }]
       });
     }
     const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAG-oCNDkA0JIDXYVJFgwZCJ9vZt5wETaY', {
@@ -4344,7 +4348,6 @@ async function sendTutorMessage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: systemPrompt }] },
         contents: geminiMessages,
         generationConfig: { maxOutputTokens: 1024 }
       })
@@ -4595,17 +4598,20 @@ async function sendFloatMessage() {
   try {
     const _systemPrompt = TUTOR_SYSTEM.replace('{{PORTAL_CONTEXT}}', buildPortalContext());
     const _geminiMsgs = [];
-    for(const m of fiHistory) {
+    for(let i=0; i<fiHistory.length; i++) {
+      const m = fiHistory[i];
+      const txt = (i===0 && m.role==='user')
+        ? _systemPrompt + '\n\n---\n\n' + String(m.content || '')
+        : String(m.content || '');
       _geminiMsgs.push({
         role: m.role === 'assistant' ? 'model' : 'user',
-        parts: [{ text: String(m.content || '') }]
+        parts: [{ text: txt }]
       });
     }
     const res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAG-oCNDkA0JIDXYVJFgwZCJ9vZt5wETaY', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        system_instruction: { parts: [{ text: _systemPrompt }] },
         contents: _geminiMsgs,
         generationConfig: { maxOutputTokens: 1024 }
       })
